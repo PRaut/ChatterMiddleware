@@ -65,7 +65,14 @@ public class BlogController {
 			System.out.println("Blog with blogId " + blogId + " Not Found");
 			return new ResponseEntity<String>("Update Blog Failue", HttpStatus.NOT_FOUND);
 		}
+		
+		mBlog.setBlogContent(blog.getBlogContent());
+		mBlog.setBlogName(blog.getBlogName());
+		mBlog.setCreatedDate(new Date());
+		mBlog.setLikes(blog.getLikes());
+		mBlog.setStatus(blog.getStatus());
 		mBlog.setUserName(blog.getUserName());
+		
 		blogDAO.updateBlog(mBlog);
 		return new ResponseEntity<String>("Update Blog Success", HttpStatus.OK);
 	}
