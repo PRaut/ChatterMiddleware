@@ -155,38 +155,37 @@ public class ForumController {
 	}
 
 	// ---------------------Get Forum Comment -----------------
-	@GetMapping(value="/getForumCommentByCommentId/{commentId}")
-	public ResponseEntity<ForumComment> getForumCommentByCommentId (@PathVariable("commentId") int commentId){
+	@GetMapping(value = "/getForumCommentByCommentId/{commentId}")
+	public ResponseEntity<ForumComment> getForumCommentByCommentId(@PathVariable("commentId") int commentId) {
 		ForumComment mForumComment = forumDAO.getForumComment(commentId);
-		if(mForumComment == null){
+		if (mForumComment == null) {
 			return new ResponseEntity<ForumComment>(HttpStatus.NOT_FOUND);
-		}else{
+		} else {
 			return new ResponseEntity<ForumComment>(mForumComment, HttpStatus.OK);
 		}
 	}
-	
+
 	// ------------------- List Forum Comments -----------------------
-	@GetMapping(value="/listForumComments/{forumId}")
-	public ResponseEntity<List<ForumComment>> listForumComments(@PathVariable("forumId") int forumId)
-	{
+	@GetMapping(value = "/listForumComments/{forumId}")
+	public ResponseEntity<List<ForumComment>> listForumComments(@PathVariable("forumId") int forumId) {
 		System.out.println("in list forum comments rest method");
 		List<ForumComment> listComments = forumDAO.listForumComment(forumId);
-		if(listComments.size() != 0){
+		if (listComments.size() != 0) {
 			return new ResponseEntity<List<ForumComment>>(listComments, HttpStatus.OK);
-		}else{
+		} else {
 			return new ResponseEntity<List<ForumComment>>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	// ------------------ Delete Forum Comment ------------------------
-	@DeleteMapping(value="/deleteForumComment/{commentId}")
-	public ResponseEntity<String> deleteForumComment(@PathVariable("commentId") int commentId){
+	@DeleteMapping(value = "/deleteForumComment/{commentId}")
+	public ResponseEntity<String> deleteForumComment(@PathVariable("commentId") int commentId) {
 		ForumComment mForumComment = forumDAO.getForumComment(commentId);
-		if(mForumComment == null){
+		if (mForumComment == null) {
 			return new ResponseEntity<String>("No forum comments found to delete", HttpStatus.NOT_FOUND);
 		}
-		
+
 		forumDAO.deleteForumComment(mForumComment);
-		return new ResponseEntity<String>("Forum comment " +commentId+" deleted", HttpStatus.OK);
+		return new ResponseEntity<String>("Forum comment " + commentId + " deleted", HttpStatus.OK);
 	}
 }
