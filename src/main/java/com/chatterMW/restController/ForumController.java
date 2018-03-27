@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chatter.DAO.ForumDAO;
-import com.chatter.model.Blog;
+import com.chatter.model.BlogComment;
 import com.chatter.model.Forum;
+import com.chatter.model.ForumComment;
 
 @RestController
 public class ForumController {
@@ -82,12 +83,12 @@ public class ForumController {
 		System.out.println("In Get Forum " + forumId);
 		Forum forum = forumDAO.getForum(forumId);
 		if (forum == null) {
-			return new ResponseEntity<String>("No forum "+ forumId +" found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>("No forum " + forumId + " found", HttpStatus.NOT_FOUND);
 		} else {
-			return new ResponseEntity<String>("Forum with Id "+ forumId+ " found Successfully", HttpStatus.OK);
+			return new ResponseEntity<String>("Forum with Id " + forumId + " found Successfully", HttpStatus.OK);
 		}
 	}
-	
+
 	// ----------------- List Forums ------------------------------
 	@GetMapping(value = "/listForums")
 	public ResponseEntity<List<Forum>> listForum() {
@@ -98,45 +99,94 @@ public class ForumController {
 			return new ResponseEntity<List<Forum>>(listForums, HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	// ------------------Update Forum -----------------------------------
 
-		@PutMapping(value = "/updateForum/{forumId}")
-		public ResponseEntity<String> updateBlog(@PathVariable("forumId") int forumId, @RequestBody Forum forum) {
-			System.out.println("Updating forum " + forumId);
-			Forum mForum = forumDAO.getForum(forumId);
-			if (mForum == null) {
-				System.out.println("Forum with forumId " + forumId + " Not Found");
-				return new ResponseEntity<String>("Update forum "+ forumId+ " Failed", HttpStatus.NOT_FOUND);
-			}
-			
-			mForum.setForumContent(forum.getForumContent());
-			mForum.setForumName(forum.getForumName());
-			mForum.setCreatedDate(new Date());
-			//mForum.setLikes(blog.getLikes());
-			mForum.setStatus(forum.getStatus());
-			mForum.setUserName(forum.getUserName());
-			
-			forumDAO.updateForum(mForum);
-			return new ResponseEntity<String>("Updated Forum " + forumId+" Successfully", HttpStatus.OK);
-		}
-		
-		
-		// ------------------ Delete Forum
-		@DeleteMapping(value = "/deleteForum/{forumId}")
-		public ResponseEntity<String> deleteBlog(@PathVariable("forumId") int forumId) {
-			System.out.println("In delete forum with Id: " + forumId);
-			Forum forum = forumDAO.getForum(forumId);
-			if (forum == null) {
-				System.out.println("No forum found to delete");
-				return new ResponseEntity<String>("No forum with forum Id: " + forumId + " found to delete",
-						HttpStatus.NOT_FOUND);
-			} else {
-				forumDAO.deleteForum(forum);
-				return new ResponseEntity<String>("Forum with forum Id " + forumId + " deleted successfully", HttpStatus.OK);
-			}
-
+	@PutMapping(value = "/updateForum/{forumId}")
+	public ResponseEntity<String> updateBlog(@PathVariable("forumId") int forumId, @RequestBody Forum forum) {
+		System.out.println("Updating forum " + forumId);
+		Forum mForum = forumDAO.getForum(forumId);
+		if (mForum == null) {
+			System.out.println("Forum with forumId " + forumId + " Not Found");
+			return new ResponseEntity<String>("Update forum " + forumId + " Failed", HttpStatus.NOT_FOUND);
 		}
 
+		mForum.setForumContent(forum.getForumContent());
+		mForum.setForumName(forum.getForumName());
+		mForum.setCreatedDate(new Date());
+		// mForum.setLikes(blog.getLikes());
+		mForum.setStatus(forum.getStatus());
+		mForum.setUserName(forum.getUserName());
 
+		forumDAO.updateForum(mForum);
+		return new ResponseEntity<String>("Updated Forum " + forumId + " Successfully", HttpStatus.OK);
+	}
+
+	// ------------------ Delete Forum
+	@DeleteMapping(value = "/deleteForum/{forumId}")
+	public ResponseEntity<String> deleteBlog(@PathVariable("forumId") int forumId) {
+		System.out.println("In delete forum with Id: " + forumId);
+		Forum forum = forumDAO.getForum(forumId);
+		if (forum == null) {
+			System.out.println("No forum found to delete");
+			return new ResponseEntity<String>("No forum with forum Id: " + forumId + " found to delete",
+					HttpStatus.NOT_FOUND);
+		} else {
+			forumDAO.deleteForum(forum);
+			return new ResponseEntity<String>("Forum with forum Id " + forumId + " deleted successfully",
+					HttpStatus.OK);
+		}
+	}
+
+	// ------------------ Add Forum Comment --------------------
+	@PostMapping(value = "/addForumComment")
+	public ResponseEntity<String> addForumComment(@RequestBody ForumComment forumComment) {
+		System.out.println("In AddForumComment Rest method");
+		forumComment.setForumId(forumComment.getForumId());
+		forumComment.setCommentDate(new Date());
+		forumComment.setCommentText(forumComment.getCommentText());
+		forumComment.setUserName(forumComment.getUserName());
+
+		if (forumDAO.addForumComment(forumComment)) {
+			return new ResponseEntity<String>("Forum Comment Added Successfully", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Forum Comment failed", HttpStatus.NOT_FOUND);
+		}
+	}
+
+	// ---------------------Get Forum Comment -----------------
+	@GetMapping(value="/getForumCommentByCommentId/{commentId}")
+	public ResponseEntity<ForumComment> getForumCommentByCommentId (@PathVariable("commentId") int commentId){
+		ForumComment mForumComment = forumDAO.getForumComment(commentId);
+		if(mForumComment == null){
+			return new ResponseEntity<ForumComment>(HttpStatus.NOT_FOUND);
+		}else{
+			return new ResponseEntity<ForumComment>(mForumComment, HttpStatus.OK);
+		}
+	}
+	
+	// ------------------- List Forum Comments -----------------------
+	@GetMapping(value="/listForumComments/{forumId}")
+	public ResponseEntity<List<ForumComment>> listForumComments(@PathVariable("forumId") int forumId)
+	{
+		System.out.println("in list forum comments rest method");
+		List<ForumComment> listComments = forumDAO.listForumComment(forumId);
+		if(listComments.size() != 0){
+			return new ResponseEntity<List<ForumComment>>(listComments, HttpStatus.OK);
+		}else{
+			return new ResponseEntity<List<ForumComment>>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	// ------------------ Delete Forum Comment ------------------------
+	@DeleteMapping(value="/deleteForumComment/{commentId}")
+	public ResponseEntity<String> deleteForumComment(@PathVariable("commentId") int commentId){
+		ForumComment mForumComment = forumDAO.getForumComment(commentId);
+		if(mForumComment == null){
+			return new ResponseEntity<String>("No forum comments found to delete", HttpStatus.NOT_FOUND);
+		}
+		
+		forumDAO.deleteForumComment(mForumComment);
+		return new ResponseEntity<String>("Forum comment " +commentId+" deleted", HttpStatus.OK);
+	}
 }
