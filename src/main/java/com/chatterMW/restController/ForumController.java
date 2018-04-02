@@ -79,13 +79,13 @@ public class ForumController {
 	// -----------------------Get Forum ------------------------------------
 
 	@GetMapping(value = "/getForum/{forumId}")
-	public ResponseEntity<String> getBlog(@PathVariable("forumId") int forumId) {
+	public ResponseEntity<Forum> getForum(@PathVariable("forumId") int forumId) {
 		System.out.println("In Get Forum " + forumId);
 		Forum forum = forumDAO.getForum(forumId);
 		if (forum == null) {
-			return new ResponseEntity<String>("No forum " + forumId + " found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Forum>(HttpStatus.NOT_FOUND);
 		} else {
-			return new ResponseEntity<String>("Forum with Id " + forumId + " found Successfully", HttpStatus.OK);
+			return new ResponseEntity<Forum>(forum, HttpStatus.OK);
 		}
 	}
 
