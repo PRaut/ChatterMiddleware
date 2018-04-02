@@ -68,7 +68,7 @@ public class BlogController {
 		}
 
 		mBlog.setBlogContent(blog.getBlogContent());
-		// mBlog.setBlogName(blog.getBlogName());
+		mBlog.setBlogName(blog.getBlogName());
 		// mBlog.setCreatedDate(new Date());
 		// mBlog.setLikes(blog.getLikes());
 		// mBlog.setStatus(blog.getStatus());
