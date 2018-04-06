@@ -3,6 +3,8 @@ package com.chatterMW.restController;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,9 @@ public class UserController {
 
 	@Autowired
 	UserDAO userDAO;
+	
+	@Autowired
+	HttpSession session;
 
 	// ----------------- Add User ---------------
 	@PostMapping(value = "/registerUser")
@@ -100,8 +105,11 @@ public class UserController {
 		if(userDAO.checkLogin(user)){
 			User mUser = userDAO.getUserByLoginName(user.getUserName());
 			userDAO.updateOnlineStatus("Y", mUser);
+			session.setAttribute("userName", user.getUserName());
+			System.out.println("#################### user logged in successfully ###############");
 			return new ResponseEntity<User>(mUser, HttpStatus.OK);
 		}else{
+			System.out.println("############## Login failed ###################");
 			return new ResponseEntity<User>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
