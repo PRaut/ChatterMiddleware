@@ -3,6 +3,9 @@ package com.chatterMW.restController;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,8 @@ public class BlogController {
 	@Autowired
 	BlogDAO blogDAO;
 
+	
+	
 	// ------------------- Demo rest -----------------------------------
 	@GetMapping(value = "/demo")
 	public ResponseEntity<String> testDemo() {
@@ -33,10 +38,14 @@ public class BlogController {
 	// ---------------- Add Blog -----------------------------------
 
 	@PostMapping(value = "/addBlog")
-	public ResponseEntity<String> addBlog(@RequestBody Blog blog) {
+	public ResponseEntity<String> addBlog(@RequestBody Blog blog, HttpServletRequest request) {
 		blog.setCreatedDate(new Date());
 		blog.setLikes(0);
 		blog.setStatus("A");
+		
+		String userName = (String)request.getSession().getAttribute("userName");
+		System.out.println("######## UserName "+ userName );
+		blog.setUserName(userName);
 		if (blogDAO.addBlog(blog)) {
 			return new ResponseEntity<String>("Blog Added- Success", HttpStatus.OK);
 		} else {
