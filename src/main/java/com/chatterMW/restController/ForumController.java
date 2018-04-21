@@ -113,10 +113,10 @@ public class ForumController {
 
 		mForum.setForumContent(forum.getForumContent());
 		mForum.setForumName(forum.getForumName());
-		mForum.setCreatedDate(new Date());
+		//mForum.setCreatedDate(new Date());
 		// mForum.setLikes(blog.getLikes());
-		mForum.setStatus(forum.getStatus());
-		mForum.setUserName(forum.getUserName());
+		//mForum.setStatus(forum.getStatus());
+		//mForum.setUserName(forum.getUserName());
 
 		forumDAO.updateForum(mForum);
 		return new ResponseEntity<String>("Updated Forum " + forumId + " Successfully", HttpStatus.OK);
