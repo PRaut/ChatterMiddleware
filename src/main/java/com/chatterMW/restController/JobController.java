@@ -42,7 +42,7 @@ public class JobController {
 		mJob.setJobDescription(job.getJobDescription());
 		mJob.setSalary(job.getSalary());
 		mJob.setNoOfOpenings(job.getNoOfOpenings());
-		mJob.setJobDesignation(job.getJobDesignation());
+		//mJob.setJobDesignation(job.getJobDesignation());
 		mJob.setJobLocation(job.getJobLocation());
 		mJob.setCompany(job.getCompany());
 		mJob.setLastDateToApply(job.getLastDateToApply());
