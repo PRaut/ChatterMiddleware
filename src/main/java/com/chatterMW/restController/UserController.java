@@ -113,4 +113,16 @@ public class UserController {
 			return new ResponseEntity<User>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@PostMapping(value="/logout")
+	public ResponseEntity<User> logout(@RequestBody User user){
+		System.out.println("Inside Logout Function");
+		User mUser = userDAO.getUserByLoginName(user.getUserName());
+		System.out.println("User Found to logout "+ mUser.getUserName());		
+		userDAO.updateOnlineStatus("N", mUser);
+		session.removeAttribute("userName");
+		session.invalidate();
+		System.out.println("User logged out successfully");
+		return new ResponseEntity<User>(mUser, HttpStatus.OK);
+	}
 }
