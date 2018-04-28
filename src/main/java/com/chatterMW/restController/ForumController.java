@@ -3,6 +3,8 @@ package com.chatterMW.restController;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chatter.DAO.ForumDAO;
-import com.chatter.model.BlogComment;
 import com.chatter.model.Forum;
 import com.chatter.model.ForumComment;
 
@@ -33,9 +34,11 @@ public class ForumController {
 	// ---------------- Add Forum -----------------------------------
 
 	@PostMapping(value = "/addForum")
-	public ResponseEntity<String> addForum(@RequestBody Forum forum) {
+	public ResponseEntity<String> addForum(@RequestBody Forum forum, HttpServletRequest request) {
 		forum.setCreatedDate(new Date());
 		forum.setStatus("A");
+		String userName = (String) request.getSession().getAttribute("userName");
+		forum.setUserName(userName);
 		if (forumDAO.addForum(forum)) {
 			return new ResponseEntity<String>("Forum added successfully", HttpStatus.OK);
 		} else {
