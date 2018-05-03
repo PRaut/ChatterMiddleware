@@ -117,7 +117,7 @@ public class UserController {
 	@PostMapping(value="/logout")
 	public ResponseEntity<User> logout(@RequestBody User user){
 		System.out.println("Inside Logout Function");
-		User mUser = userDAO.getUserByLoginName(user.getUserName());
+		User mUser = userDAO.getUserByLoginName((String)session.getAttribute("userName"));
 		System.out.println("User Found to logout "+ mUser.getUserName());		
 		userDAO.updateOnlineStatus("N", mUser);
 		session.removeAttribute("userName");
