@@ -34,15 +34,15 @@ public class ForumController {
 	// ---------------- Add Forum -----------------------------------
 
 	@PostMapping(value = "/addForum")
-	public ResponseEntity<String> addForum(@RequestBody Forum forum, HttpServletRequest request) {
+	public ResponseEntity<Forum> addForum(@RequestBody Forum forum, HttpServletRequest request) {
 		forum.setCreatedDate(new Date());
 		forum.setStatus("A");
 		String userName = (String) request.getSession().getAttribute("userName");
 		forum.setUserName(userName);
 		if (forumDAO.addForum(forum)) {
-			return new ResponseEntity<String>("Forum added successfully", HttpStatus.OK);
+			return new ResponseEntity<Forum>(forum, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<String>("Forum insert failed", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Forum>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -103,6 +103,15 @@ public class ForumController {
 		}
 	}
 
+	@GetMapping(value = "/listForums/{userName}")
+	public ResponseEntity<List<Forum>> listForumByName(@PathVariable("userName") String userName) {
+		List<Forum> listForums = forumDAO.listForumByName(userName);
+		if (listForums.size() != 0) {
+			return new ResponseEntity<List<Forum>>(listForums, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<List<Forum>>(HttpStatus.NOT_FOUND);
+		}
+	}
 	// ------------------Update Forum -----------------------------------
 
 	@PutMapping(value = "/updateForum/{forumId}")
@@ -116,10 +125,10 @@ public class ForumController {
 
 		mForum.setForumContent(forum.getForumContent());
 		mForum.setForumName(forum.getForumName());
-		//mForum.setCreatedDate(new Date());
+		// mForum.setCreatedDate(new Date());
 		// mForum.setLikes(blog.getLikes());
-		//mForum.setStatus(forum.getStatus());
-		//mForum.setUserName(forum.getUserName());
+		// mForum.setStatus(forum.getStatus());
+		// mForum.setUserName(forum.getUserName());
 
 		forumDAO.updateForum(mForum);
 		return new ResponseEntity<String>("Updated Forum " + forumId + " Successfully", HttpStatus.OK);
